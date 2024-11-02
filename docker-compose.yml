@@ -53,6 +53,26 @@ services:
             - "443:443"
         volumes:
             - ./setup_firewall.sh:/usr/local/bin/setup_firewall.sh
+    
+    keycloak-server:
+        build:
+            context: .
+            dockerfile: Dockerfile_Keycloak
+        container_name: keycloak-server
+        restart: unless-stopped
+        environment:
+            - KC_DB=mysql
+            - KC_DB_URL=jdbc:mysql://persistencia:3306/persistencia
+            - KC_DB_USERNAME=persistencia
+            - KC_DB_PASSWORD=persistencia-12345
+            - KC_BOOTSTRAP_ADMIN_USERNAME=admin
+            - KC_BOOTSTRAP_ADMIN_PASSWORD=admin123
+        ports:
+            - "8080:8080"
+        depends_on:
+            - persistencia
+        networks:
+            - internal_net
 
 networks:
     internal_net:

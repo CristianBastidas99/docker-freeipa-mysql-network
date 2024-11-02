@@ -1,0 +1,9 @@
+# Dockerfile_Keycloak
+FROM quay.io/keycloak/keycloak:latest
+
+# Establecer el modo de inicio para Keycloak
+ENV KEYCLOAK_ADMIN=${KC_BOOTSTRAP_ADMIN_USERNAME}
+ENV KEYCLOAK_ADMIN_PASSWORD=${KC_BOOTSTRAP_ADMIN_PASSWORD}
+
+# Configuración de inicio con distribución de inicio automático
+ENTRYPOINT ["/opt/keycloak/bin/kc.sh", "start-dev"]
