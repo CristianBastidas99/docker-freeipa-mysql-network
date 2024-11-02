@@ -1,0 +1,14 @@
+# Dockerfile_Firewall
+FROM nicolaka/netshoot
+
+LABEL maintainer="your-email@example.com"
+
+# Exponer los puertos necesarios
+EXPOSE 80 443 389 636 88 464
+
+# Copiar y establecer permisos para el script de configuración de firewall
+COPY setup_firewall.sh /usr/local/bin/setup_firewall.sh
+RUN chmod +x /usr/local/bin/setup_firewall.sh
+
+# Ejecutar el script de configuración de firewall al iniciar
+CMD ["/usr/local/bin/setup_firewall.sh"]

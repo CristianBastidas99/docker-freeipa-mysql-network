@@ -1,63 +1,60 @@
-version: '3.7'
+version: "3.7"
 services:
-  persistencia:
-    image: mysql:latest
-    container_name: persistencia
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: persistencia-12345
-      MYSQL_DATABASE: persistencia
-      MYSQL_USER: persistencia
-      MYSQL_PASSWORD: persistencia-12345
-    volumes:
-      - ./sql:/docker-entrypoint-initdb.d:z
-    shm_size: 128mb
-    networks:
-      - internal_net
+    persistencia:
+        build:
+            context: .
+            dockerfile: Dockerfile_Mysql
+        container_name: persistencia
+        restart: always
+        environment:
+            MYSQL_ROOT_PASSWORD: persistencia-12345
+            MYSQL_DATABASE: persistencia
+            MYSQL_USER: persistencia
+            MYSQL_PASSWORD: persistencia-12345
+        volumes:
+            - ./sql:/docker-entrypoint-initdb.d:z
+        shm_size: 128mb
+        networks:
+            - internal_net
 
-  freeipa:
-    hostname: ipa1.test.com
-    image: freeipa/freeipa-server:rocky-8-4.9.11
-    expose:
-      - 443
-      - 80
-      - 464
-      - 88
-      - 636
-      - 389
-    container_name: freeipa-server1
-    restart: unless-stopped
-    sysctls: 
-      net.ipv6.conf.all.disable_ipv6: "0"
-    command: ipa-server-install --realm=test.com --ds-password=DirectoryManagerPassword --unattended 
-    environment:
-      - PASSWORD=Aa123456
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - /var/lib/ipa-data:/data:Z
-      - /sys/fs/cgroup:/sys/fs/cgroup
-    networks:
-        - internal_net
+    freeipa:
+        build:
+            context: .
+            dockerfile: Dockerfile_Freeipa
+        hostname: ipa1.test.com
+        container_name: freeipa-server1
+        restart: unless-stopped
+        sysctls:
+            net.ipv6.conf.all.disable_ipv6: "0"
+        environment:
+            - PASSWORD=Aa123456
+        volumes:
+            - /etc/localtime:/etc/localtime:ro
+            - /var/lib/ipa-data:/data:Z
+            - /sys/fs/cgroup:/sys/fs/cgroup
+        networks:
+            - internal_net
 
-  firewall:
-    image: nicolaka/netshoot
-    container_name: firewall
-    cap_add:
-      - NET_ADMIN
-    privileged: true
-    depends_on:
-      - freeipa
-    networks:
-      - internal_net
-      - external_net
-    ports:
-      - "443:443"
-    volumes:
-    - ./setup_firewall.sh:/usr/local/bin/setup_firewall.sh
-    command: sh -c "chmod +x /usr/local/bin/setup_firewall.sh && /usr/local/bin/setup_firewall.sh"
+    firewall:
+        build:
+            context: .
+            dockerfile: Dockerfile_Firewall
+        container_name: firewall
+        cap_add:
+            - NET_ADMIN
+        privileged: true
+        depends_on:
+            - freeipa
+        networks:
+            - internal_net
+            - external_net
+        ports:
+            - "443:443"
+        volumes:
+            - ./setup_firewall.sh:/usr/local/bin/setup_firewall.sh
 
 networks:
-  internal_net:
-    driver: bridge
-  external_net:
-    driver: bridge
+    internal_net:
+        driver: bridge
+    external_net:
+        driver: bridge

@@ -1,0 +1,16 @@
+# Dockerfile_Mysql
+FROM mysql:latest
+
+LABEL maintainer="your-email@example.com"
+
+# Configuración de las variables de entorno para MySQL
+ENV MYSQL_ROOT_PASSWORD=persistencia-12345
+ENV MYSQL_DATABASE=persistencia
+ENV MYSQL_USER=persistencia
+ENV MYSQL_PASSWORD=persistencia-12345
+
+# Directorio de inicialización de base de datos
+VOLUME /docker-entrypoint-initdb.d
+
+# Exponer el puerto MySQL
+EXPOSE 3306

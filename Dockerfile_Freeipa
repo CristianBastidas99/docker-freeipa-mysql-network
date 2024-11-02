@@ -1,0 +1,21 @@
+# Dockerfile_Freeipa
+FROM freeipa/freeipa-server:rocky-8-4.9.11
+
+LABEL maintainer="your-email@example.com"
+
+# Exponer los puertos necesarios
+EXPOSE 389      
+# LDAP
+EXPOSE 636      
+# LDAPS
+EXPOSE 88       
+# Kerberos UDP/TCP
+EXPOSE 464      
+# Kerberos cambio de contraseña UDP/TCP
+EXPOSE 80       
+# HTTP
+EXPOSE 443      
+# HTTPS
+
+# Comando de instalación de FreeIPA
+CMD ["ipa-server-install", "--realm=test.com", "--ds-password=DirectoryManagerPassword", "--unattended"]
