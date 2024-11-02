@@ -1,6 +1,22 @@
-composer.phar
-/vendor/
+# Ignora archivos de Docker
+*.log
+*.pid
+*.pid.lock
+**/Dockerfile~
+docker-compose.override.yml
+docker-compose*.yml~
 
-# Commit your application's lock file https://getcomposer.org/doc/01-basic-usage.md#commit-your-composer-lock-file-to-version-control
-# You may choose to ignore a library lock file http://getcomposer.org/doc/02-libraries.md#lock-file
-# composer.lock
+# Archivos de configuración y sensitive data
+.env
+*.env
+.env.*
+
+# Archivos de MySQL u otras bases de datos
+sql/*.sql
+data/
+
+# Otros archivos temporales o de sistema
+*.swp
+*.bak
+*.tmp
+*~
