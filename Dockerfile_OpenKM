@@ -1,0 +1,33 @@
+# Usa una imagen base que tenga Tomcat 9 y Java 8 preinstalados
+FROM tomcat:9.0-jdk8-openjdk
+
+# Información del mantenedor
+LABEL maintainer="your-email@example.com"
+
+# Variables de entorno
+ENV OPENKM_VERSION=6.3.11
+
+# Descarga y configuración de OpenKM y JavaMail
+RUN apt-get update && apt-get install -y wget unzip && \
+    wget https://sourceforge.net/projects/openkm/files/OpenKM-${OPENKM_VERSION}.zip/download -O /tmp/openkm.zip && \
+    wget https://repo1.maven.org/maven2/javax/mail/javax.mail-api/1.6.2/javax.mail-api-1.6.2.jar -O /tmp/javax.mail-api.jar && \
+    wget https://repo1.maven.org/maven2/com/sun/mail/javax.mail/1.6.2/javax.mail-1.6.2.jar -O /tmp/javax.mail.jar && \
+    unzip /tmp/openkm.zip -d /tmp/ && \
+    # Verifica y mueve el archivo OpenKM.war
+    if [ -f "/tmp/OpenKM.war" ]; then \
+        mv /tmp/OpenKM.war /usr/local/tomcat/webapps/; \
+    else \
+        echo "Error: OpenKM.war no encontrado"; \
+        exit 1; \
+    fi && \
+    # Mueve las bibliotecas JavaMail al directorio de Tomcat
+    mv /tmp/javax.mail-api.jar /usr/local/tomcat/lib/ && \
+    mv /tmp/javax.mail.jar /usr/local/tomcat/lib/ && \
+    rm /tmp/openkm.zip && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Exponer el puerto de Tomcat
+EXPOSE 8080
+
+# Comando para iniciar Tomcat
+CMD ["catalina.sh", "run"]
