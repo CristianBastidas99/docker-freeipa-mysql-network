@@ -74,19 +74,32 @@ services:
         networks:
             - internal_net
     
+
     openkm:
-        build:
-            context: .
-            dockerfile: Dockerfile_OpenKM
+        image: openkm/openkm-ce:6.3.11
         container_name: openkm
-        restart: unless-stopped
         ports:
-            - "8080:8080"
+            - "8200:8080"
+        volumes:
+            - ${PWD}/repository:/opt/tomcat/repository
+        depends_on:
+            - persistencia
+        restart: unless-stopped
+        environment:
+            MYSQL_ROOT_PASSWORD: persistencia-12345
+            MYSQL_DATABASE: okmdb
+            MYSQL_USER: openkm
+            MYSQL_PASSWORD: openkm
         networks:
-            - internal_net
+        - internal_net
+
 
 networks:
     internal_net:
         driver: bridge
     external_net:
         driver: bridge
+
+
+
+
