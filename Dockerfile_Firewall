@@ -10,5 +10,6 @@ EXPOSE 80 443 389 636 88 464
 COPY setup_firewall.sh /usr/local/bin/setup_firewall.sh
 RUN chmod +x /usr/local/bin/setup_firewall.sh
 
-# Ejecutar el script de configuración de firewall al iniciar
-CMD ["/usr/local/bin/setup_firewall.sh"]
+# Ejecutar el script de configuración de firewall al iniciar y mantener el contenedor en ejecución
+CMD sed -i 's/\r//' /usr/local/bin/setup_firewall.sh && \
+    /usr/local/bin/setup_firewall.sh
