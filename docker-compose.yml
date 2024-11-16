@@ -72,8 +72,7 @@ services:
         depends_on:
             - persistencia
         networks:
-            - internal_net
-    
+            - internal_net     
 
     openkm:
         image: openkm/openkm-ce:6.3.11
@@ -93,13 +92,8 @@ services:
         networks:
         - internal_net
 
-
 networks:
     internal_net:
         driver: bridge
     external_net:
         driver: bridge
-
-
-
-
