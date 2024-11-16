@@ -8,6 +8,8 @@ Este proyecto contiene un `docker-compose` que configura un entorno de contenedo
 2. [Instrucciones](#instrucciones)
 3. [Servicios](#servicios)
 4. [Redes](#redes)
+5. [Configuración de Keycloak](#configuración-de-keycloak)
+
 
 ---
 
@@ -64,4 +66,68 @@ Este proyecto contiene un `docker-compose` que configura un entorno de contenedo
 
 - **internal_net**: Red interna entre todos los contenedores.
 - **external_net**: Red externa a la que `firewall` tiene acceso.
+
+---
+
+## Configuración de Keycloak
+
+### Acceder a Keycloak
+1. Abre tu navegador y ve a `http://localhost:8081`.
+2. Inicia sesión con las siguientes credenciales:
+   - **Usuario**: `admin`
+   - **Contraseña**: `admin123`
+
+---
+
+### Crear un nuevo *Realm*
+1. En el menú de la izquierda, selecciona `Add realm`.
+2. Ingresa el nombre del *realm* como `MyRealm` y guarda los cambios.
+
+---
+
+### Crear un nuevo usuario
+1. En el menú de la izquierda, selecciona `Users` y luego `Add user`.
+2. Ingresa un nombre de usuario y guarda los cambios.
+3. En la pestaña `Credentials`:
+   - Establece una contraseña para el usuario.
+   - Asegúrate de desmarcar la opción `Temporary` para que la contraseña no expire.
+
+---
+
+### Crear un nuevo cliente
+1. En el menú de la izquierda, selecciona `Clients` y luego `Create`.
+2. Ingresa el **Client ID** como `my-client` y guarda los cambios.
+3. En la pestaña `Settings`:
+   - Establece **Valid Redirect URIs** a `https://www.keycloak.org/app/*`.
+   - Establece **Web Origins** a `https://keycloak.org`.
+
+---
+
+### Configurar la federación de identidad con Google
+1. En el menú de la izquierda, selecciona `Identity Providers` y luego `Add provider`.
+2. Selecciona `Google` y completa los campos necesarios con la información de tu proyecto en Google Cloud Console:
+   - **Client ID**: Obtén este dato desde Google Cloud Console.
+   - **Client Secret**: También se obtiene desde Google Cloud Console.
+3. Guarda los cambios.
+
+---
+
+### Probar la configuración
+1. Abre tu navegador y ve a `http://localhost:8081/realms/MyRealm/account`.
+2. Inicia sesión con las credenciales del usuario creado previamente.
+3. Si configuraste correctamente la federación de identidad con Google, prueba iniciar sesión con una cuenta de Google.
+
+---
+
+## Resumen
+Con esta configuración:
+- Podrás gestionar accesos y usuarios desde el *realm* `MyRealm`.
+- Tendrás un cliente configurado para redirigir a la URI definida.
+- Habrás integrado la federación de identidad con Google para iniciar sesión usando cuentas de Google.
+
+Estas configuraciones pueden ser utilizadas tanto para pruebas locales como en producción.
+
+
+
+
 
